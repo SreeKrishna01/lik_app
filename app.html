@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LIK — Love Insurance Kompany</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;min-height:100vh;color:#fff;font-family:'Outfit',sans-serif;overflow-x:hidden;background:#08121f;}
+#bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;}
+.app{position:relative;z-index:10;min-height:100vh;}
+
+/* HEADER */
+.header{text-align:center;padding:22px 16px 8px;background:linear-gradient(180deg,rgba(6,12,28,0.98) 70%,transparent);border-bottom:1px solid rgba(100,200,255,0.12);}
+.logo-txt{font-size:82px;font-weight:900;color:#ffe600;line-height:1;letter-spacing:-3px;font-family:'Orbitron',monospace;text-shadow:0 0 40px rgba(255,220,0,0.7),0 0 80px rgba(255,180,0,0.3);}
+.i-wrap{position:relative;display:inline-block;}
+.i-dot{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:19px;height:19px;background:#ff2d8a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 0 18px rgba(255,45,138,1),0 0 36px rgba(255,45,138,0.5);}
+.logo-sub{font-size:9px;letter-spacing:5px;color:rgba(255,220,0,0.55);font-weight:600;text-transform:uppercase;margin-top:2px;font-family:'Outfit',sans-serif;}
+.lbar{display:flex;gap:6px;justify-content:center;padding:10px 8px 6px;flex-wrap:wrap;}
+.lb{padding:5px 14px;border-radius:20px;border:1px solid rgba(100,200,255,0.2);background:rgba(100,200,255,0.03);color:rgba(180,220,255,0.5);font-size:11px;cursor:pointer;transition:all 0.25s;font-family:'Outfit',sans-serif;}
+.lb:hover{border-color:rgba(100,200,255,0.4);color:rgba(180,220,255,0.8);}
+.lb.active{background:rgba(100,200,255,0.1);border-color:rgba(100,200,255,0.6);color:#aadfff;}
+
+/* SCREENS */
+.sc{display:none;padding:14px;max-width:460px;margin:0 auto;}
+.sc.active{display:block;}
+
+/* CARDS */
+.card{background:rgba(8,18,38,0.88);backdrop-filter:blur(24px);border-radius:20px;border:1px solid rgba(100,180,255,0.15);padding:22px;margin-bottom:14px;box-shadow:0 8px 48px rgba(0,80,180,0.1);}
+.ct{font-size:16px;font-weight:600;color:#aae0ff;margin-bottom:14px;text-align:center;font-family:'Outfit',sans-serif;}
+.il{font-size:10px;color:rgba(150,210,255,0.55);margin-bottom:5px;font-weight:600;display:block;letter-spacing:1.5px;text-transform:uppercase;}
+.inf{width:100%;padding:11px 15px;border-radius:11px;border:1px solid rgba(100,180,255,0.2);background:rgba(100,180,255,0.04);font-size:14px;outline:none;color:#fff;font-family:'Outfit',sans-serif;transition:border 0.2s;}
+.inf:focus{border-color:rgba(100,200,255,0.5);background:rgba(100,200,255,0.07);}
+.inf::placeholder{color:rgba(255,255,255,0.2);}
+
+/* GENDER */
+.grow{display:flex;gap:10px;margin-top:4px;}
+.gb{flex:1;padding:12px 8px;border-radius:13px;border:1.5px solid rgba(100,180,255,0.18);background:rgba(100,180,255,0.03);color:rgba(150,210,255,0.6);font-size:12px;cursor:pointer;text-align:center;transition:all 0.2s;font-weight:500;font-family:'Outfit',sans-serif;}
+.gb:hover{border-color:rgba(100,200,255,0.35);}
+.gb.sel{border-color:#ff2d8a;background:rgba(255,45,138,0.12);color:#ff85c0;box-shadow:0 0 16px rgba(255,45,138,0.18);}
+.gico{font-size:22px;display:block;margin-bottom:4px;}
+
+/* BUTTONS */
+.bm{width:100%;padding:13px;border-radius:13px;background:linear-gradient(135deg,#ff2d8a,#c0005e);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;margin-top:10px;box-shadow:0 4px 24px rgba(255,45,138,0.35);font-family:'Outfit',sans-serif;letter-spacing:0.3px;transition:opacity 0.2s;}
+.bm:hover{opacity:0.9;}
+.bm:active{opacity:0.8;}
+.bs{width:100%;padding:11px;border-radius:13px;background:transparent;color:#ffe600;font-size:13px;font-weight:600;border:1.5px solid rgba(255,220,0,0.3);cursor:pointer;margin-top:8px;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.bs:hover{border-color:rgba(255,220,0,0.6);background:rgba(255,220,0,0.05);}
+
+/* CODE BOX */
+.cbox{background:rgba(255,220,0,0.03);border:1.5px dashed rgba(255,220,0,0.3);border-radius:15px;padding:18px;text-align:center;margin:12px 0;}
+.cval{font-size:32px;font-weight:900;color:#ffe600;letter-spacing:7px;text-shadow:0 0 28px rgba(255,220,0,0.6);font-family:'Orbitron',monospace;}
+.chint{font-size:10px;color:rgba(255,220,0,0.4);margin-top:4px;}
+
+/* NAV BACK */
+.nb{display:flex;align-items:center;gap:5px;color:rgba(150,210,255,0.7);font-size:12px;cursor:pointer;margin-bottom:12px;background:none;border:none;font-weight:500;font-family:'Outfit',sans-serif;}
+.nb:hover{color:#aae0ff;}
+
+/* BADGES */
+.pbg{display:inline-block;padding:4px 13px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,45,138,0.08);color:#ff85c0;border:1px solid rgba(255,45,138,0.2);margin-bottom:9px;}
+.ntag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:9px;letter-spacing:2px;border:1px solid rgba(100,200,255,0.2);color:rgba(100,200,255,0.45);background:rgba(100,200,255,0.03);margin-bottom:8px;}
+
+/* PROGRESS */
+.pbw{background:rgba(255,45,138,0.08);border-radius:20px;height:4px;margin:8px 0;overflow:hidden;}
+.pb{background:linear-gradient(90deg,#ff2d8a,#ffe600);height:4px;border-radius:20px;transition:width 0.5s;}
+
+/* QUESTIONS */
+.qi{background:rgba(100,180,255,0.04);border-radius:11px;padding:11px 13px;margin-bottom:8px;border:0.5px solid rgba(100,180,255,0.1);}
+.qn{font-size:10px;color:rgba(150,210,255,0.6);font-weight:600;margin-bottom:3px;}
+.qt{font-size:13px;color:rgba(255,255,255,0.78);margin-bottom:7px;}
+.qin{width:100%;padding:8px 11px;border-radius:9px;border:1px solid rgba(100,180,255,0.2);background:rgba(255,255,255,0.02);font-size:13px;outline:none;color:#fff;font-family:'Outfit',sans-serif;}
+.qin:focus{border-color:rgba(100,200,255,0.45);}
+.qin::placeholder{color:rgba(255,255,255,0.18);}
+
+/* SET Q */
+.aqb{display:flex;align-items:center;gap:7px;background:rgba(255,45,138,0.04);border:1px dashed rgba(255,45,138,0.3);border-radius:10px;padding:9px 13px;width:100%;cursor:pointer;color:#ff85c0;font-size:12px;font-weight:500;margin-bottom:9px;font-family:'Outfit',sans-serif;}
+.qsi{background:rgba(100,180,255,0.04);border:0.5px solid rgba(100,180,255,0.15);border-radius:10px;padding:9px 11px;margin-bottom:7px;}
+.qsinput{width:100%;padding:7px 11px;border-radius:8px;border:1px solid rgba(100,180,255,0.18);background:rgba(255,255,255,0.02);font-size:12px;outline:none;color:#fff;font-family:'Outfit',sans-serif;}
+.qsinput:focus{border-color:rgba(100,200,255,0.4);}
+.qsinput::placeholder{color:rgba(255,255,255,0.18);}
+.db{background:rgba(255,45,138,0.08);border:none;color:#ff85c0;font-size:14px;cursor:pointer;padding:3px 9px;border-radius:6px;margin-top:5px;}
+
+/* SUGGESTIONS */
+.stag{display:inline-block;background:rgba(100,200,255,0.04);border:1px solid rgba(100,200,255,0.15);border-radius:20px;padding:4px 11px;font-size:10px;color:rgba(150,210,255,0.55);margin:2px;cursor:pointer;transition:all 0.2s;}
+.stag:hover{background:rgba(100,200,255,0.1);color:#aae0ff;}
+
+/* WAIT */
+.wh{font-size:58px;animation:hp 1.2s infinite ease-in-out;display:inline-block;filter:drop-shadow(0 0 20px #ff2d8a);}
+@keyframes hp{0%,100%{transform:scale(1);}50%{transform:scale(1.22);}}
+
+/* SCORE */
+.sci{width:145px;height:145px;border-radius:50%;background:linear-gradient(135deg,#ff2d8a,#a8005a);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:12px auto;box-shadow:0 0 60px rgba(255,45,138,0.5),0 0 120px rgba(255,45,138,0.2);}
+.snum{font-size:42px;font-weight:900;color:#fff;line-height:1;font-family:'Orbitron',monospace;}
+.slbl{font-size:10px;color:rgba(255,255,255,0.55);}
+.smsg{text-align:center;font-size:14px;font-weight:500;color:#aae0ff;margin:10px 0;line-height:1.5;}
+.sdet{background:rgba(100,180,255,0.04);border-radius:12px;padding:12px;margin-top:10px;border:0.5px solid rgba(100,180,255,0.1);}
+.srow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid rgba(100,180,255,0.08);font-size:12px;color:rgba(255,255,255,0.5);}
+.srow:last-child{border-bottom:none;}
+.spt{color:#ff85c0;font-weight:600;}
+.hs{border:none;border-top:0.5px solid rgba(100,180,255,0.1);margin:12px 0;}
+.qct{font-size:10px;color:rgba(255,255,255,0.28);text-align:right;margin-bottom:9px;}
+
+/* VOICE INDICATOR */
+.vi{display:flex;align-items:center;gap:8px;background:rgba(255,45,138,0.05);border:1px solid rgba(255,45,138,0.15);border-radius:9px;padding:7px 12px;margin-bottom:10px;}
+.vd{width:7px;height:7px;border-radius:50%;background:#ff2d8a;animation:vp 1.4s infinite;}
+@keyframes vp{0%,100%{opacity:1;box-shadow:0 0 6px #ff2d8a;}50%{opacity:0.3;box-shadow:none;}}
+.vt{font-size:11px;color:rgba(255,133,192,0.65);}
+
+/* LOADING */
+.lov{position:fixed;inset:0;background:rgba(6,12,28,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
+.lovt{font-size:13px;color:#aae0ff;margin-top:12px;font-weight:500;}
+
+/* INFO TEXT */
+.info-sm{font-size:10px;color:rgba(255,255,255,0.22);text-align:center;margin-top:5px;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+  <div class="header">
+    <div class="logo-txt">l<span class="i-wrap">i<span class="i-dot">&#9829;</span></span>k</div>
+    <div class="logo-sub">Love Insurance Kompany</div>
+    <div class="lbar">
+      <button class="lb active" onclick="setLang('en')">English</button>
+      <button class="lb" onclick="setLang('ta')">Tamil</button>
+      <button class="lb" onclick="setLang('tg')">Thanglish</button>
+      <button class="lb" onclick="setLang('hi')">Hindi</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="s-home" class="sc active">
+    <div style="padding-top:18px;">
+      <div class="card">
+        <div class="ntag">&#9889; LOVE OS v2090</div>
+        <div class="ct" id="t-welcome">Welcome to LIK</div>
+        <div style="text-align:center;font-size:12px;color:rgba(150,210,255,0.45);margin-bottom:16px;" id="t-tag">Find your real love score — powered by AI</div>
+        <button class="bm" onclick="showS('s-create')" id="t-create">Create a Couple</button>
+        <button class="bs" onclick="showS('s-join')" id="t-join">Join with Couple Code</button>
+      </div>
+      <div class="info-sm" id="t-priv">Answers locked until both partners submit</div>
+    </div>
+  </div>
+
+  <!-- CREATE -->
+  <div id="s-create" class="sc">
+    <button class="nb" onclick="showS('s-home')">&#8592; Back</button>
+    <div class="card">
+      <div class="ct">Create Your Couple</div>
+      <div style="margin-bottom:12px;">
+        <label class="il">Your Name</label>
+        <input class="inf" type="text" id="c-name" placeholder="Enter your name"/>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="il">Your Gender</label>
+        <div class="grow">
+          <div class="gb" id="gc-M" onclick="selG('c','M')"><span class="gico">&#9794;</span>Male</div>
+          <div class="gb" id="gc-F" onclick="selG('c','F')"><span class="gico">&#9792;</span>Female</div>
+        </div>
+      </div>
+      <button class="bm" onclick="doCreate()">Generate Couple Code &#8594;</button>
+    </div>
+  </div>
+
+  <!-- JOIN -->
+  <div id="s-join" class="sc">
+    <button class="nb" onclick="showS('s-home')">&#8592; Back</button>
+    <div class="card">
+      <div class="ct">Join Your Partner</div>
+      <div style="margin-bottom:12px;">
+        <label class="il">Your Name</label>
+        <input class="inf" type="text" id="j-name" placeholder="Enter your name"/>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label class="il">Your Gender</label>
+        <div class="grow">
+          <div class="gb" id="gj-M" onclick="selG('j','M')"><span class="gico">&#9794;</span>Male</div>
+          <div class="gb" id="gj-F" onclick="selG('j','F')"><span class="gico">&#9792;</span>Female</div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="il">Couple Code</label>
+        <input class="inf" type="text" id="j-code" placeholder="LIK-XXXX" style="letter-spacing:3px;font-weight:700;font-size:17px;" oninput="this.value=this.value.toUpperCase()"/>
+      </div>
+      <button class="bm" onclick="doJoin()">Join &#8594;</button>
+    </div>
+  </div>
+
+  <!-- CODE SHARE -->
+  <div id="s-code" class="sc">
+    <div style="padding-top:18px;">
+      <div class="card" style="text-align:center;">
+        <div class="vi" id="vi-code" style="display:none;"><div class="vd"></div><div class="vt" id="vi-code-t">Voice active...</div></div>
+        <div class="ct">Your Couple Code</div>
+        <div class="cbox">
+          <div class="cval" id="disp-code">LIK-0000</div>
+          <div class="chint">Share this with your partner</div>
+        </div>
+        <div class="info-sm" style="margin-bottom:14px;">Partner joins with this code → both set questions → both answer → results revealed together</div>
+        <button class="bm" onclick="goSetQ()">Set Questions for My Partner &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SET QUESTIONS -->
+  <div id="s-setq" class="sc">
+    <button class="nb" onclick="showS('s-code')">&#8592; Back</button>
+    <div class="card">
+      <div class="vi" id="vi-setq" style="display:none;"><div class="vd"></div><div class="vt" id="vi-setq-t">Voice active...</div></div>
+      <div style="text-align:center;margin-bottom:9px;"><span class="pbg">Questions for your partner</span></div>
+      <div class="ct">Set Your Questions</div>
+      <div style="font-size:10px;color:rgba(150,210,255,0.38);text-align:center;margin-bottom:12px;">Min 5 &nbsp;|&nbsp; Max 20 questions</div>
+      <div id="q-list"></div>
+      <button class="aqb" onclick="addQ()"><span style="font-size:17px;line-height:1;">+</span>&nbsp; Add Question</button>
+      <div class="hs"></div>
+      <div style="font-size:9px;color:rgba(255,220,0,0.5);margin-bottom:7px;font-weight:600;letter-spacing:1.5px;">SUGGESTIONS</div>
+      <div id="s-cont"></div>
+      <div style="height:10px;"></div>
+      <button class="bm" onclick="submitQs()">Submit Questions &#8594;</button>
+    </div>
+  </div>
+
+  <!-- WAIT / ANSWER -->
+  <div id="s-wait" class="sc">
+    <div style="padding-top:28px;">
+      <div class="card" style="text-align:center;">
+        <div class="vi" id="vi-wait" style="display:none;"><div class="vd"></div><div class="vt" id="vi-wait-t">Voice active...</div></div>
+        <div class="wh">&#9829;</div>
+        <div style="font-size:15px;font-weight:600;color:#ff85c0;margin:10px 0 6px;">Questions Submitted!</div>
+        <div class="info-sm" style="margin-bottom:18px;">Now answer your partner's questions.<br>Results unlock only when both submit answers.</div>
+        <button class="bm" onclick="startAnswering()">Answer Partner's Questions &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANSWER -->
+  <div id="s-ans" class="sc">
+    <div class="card">
+      <div class="vi" id="vi-ans" style="display:none;"><div class="vd"></div><div class="vt" id="vi-ans-t">Voice active...</div></div>
+      <div style="text-align:center;margin-bottom:8px;"><span class="pbg">Answering your partner's questions</span></div>
+      <div class="pbw"><div class="pb" id="apb" style="width:0%"></div></div>
+      <div class="qct" id="qct">0 / 0</div>
+      <div id="ans-list"></div>
+      <button class="bm" onclick="submitAnswers()">Submit Answers &#8594;</button>
+    </div>
+  </div>
+
+  <!-- CALC -->
+  <div id="s-calc" class="sc">
+    <div style="padding-top:70px;text-align:center;">
+      <div class="wh" style="font-size:64px;">&#9829;</div>
+      <div style="font-size:14px;color:#aae0ff;margin-top:16px;font-weight:500;">AI is calculating your love score...</div>
+      <div class="info-sm" style="margin-top:7px;">Analyzing across 2090 neural love parameters</div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="s-result" class="sc">
+    <div style="padding-top:14px;">
+      <div class="card" style="text-align:center;">
+        <div class="vi" id="vi-res" style="display:none;"><div class="vd"></div><div class="vt" id="vi-res-t">Voice active...</div></div>
+        <div class="ntag">&#9889; LOVE ANALYSIS COMPLETE</div>
+        <div style="font-size:11px;color:rgba(150,210,255,0.4);margin-bottom:7px;">Your Love Score</div>
+        <div class="sci">
+          <div class="snum" id="res-score">0%</div>
+          <div class="slbl">Love Score</div>
+        </div>
+        <div class="smsg" id="res-msg"></div>
+        <div class="hs"></div>
+        <div class="sdet">
+          <div style="font-size:9px;color:rgba(255,220,0,0.5);font-weight:600;margin-bottom:9px;letter-spacing:1.5px;">SCORE BREAKDOWN</div>
+          <div id="res-break"></div>
+        </div>
+        <button class="bm" onclick="restartApp()" style="margin-top:14px;">Play Again &#8594;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lov" class="lov" style="display:none;">
+    <div class="wh" style="font-size:50px;">&#9829;</div>
+    <div class="lovt" id="lov-t">Loading...</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BACKGROUND CANVAS — Futuristic 2090 City
+// ============================================================
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, frame = 0;
+let buildings = [], energyStreams = [], flyingVehicles = [], hearts = [], particles = [], clouds = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  initScene();
+}
+
+function initScene() {
+  // Buildings — curved futuristic white/silver
+  buildings = [];
+  const count = Math.floor(W / 55) + 6;
+  for (let i = 0; i < count; i++) {
+    const x = (i / count) * W + Math.random() * 30 - 15;
+    const h = 80 + Math.random() * 260;
+    const w = 30 + Math.random() * 60;
+    const type = Math.floor(Math.random() * 4); // 0=tower 1=curved 2=dome 3=spire
+    buildings.push({
+      x, w, h, type,
+      color: `hsl(${200 + Math.random() * 40},${30 + Math.random() * 30}%,${55 + Math.random() * 20}%)`,
+      glowColor: Math.random() > 0.5 ? 'rgba(100,180,255,0.6)' : 'rgba(180,240,255,0.5)',
+      windows: genWindows(x, w, h),
+      glowStripes: Math.random() > 0.4,
+      stripeColor: Math.random() > 0.5 ? 'rgba(80,180,255,0.7)' : 'rgba(255,45,138,0.5)'
+    });
+  }
+
+  // Energy streams — blue flowing highways
+  energyStreams = [];
+  for (let i = 0; i < 5; i++) {
+    energyStreams.push({
+      y: H * (0.55 + i * 0.06),
+      amplitude: 18 + Math.random() * 30,
+      freq: 0.004 + Math.random() * 0.003,
+      speed: 0.6 + Math.random() * 0.8,
+      offset: Math.random() * 200,
+      color: i % 2 === 0 ? 'rgba(60,160,255,0.35)' : 'rgba(120,220,255,0.25)',
+      width: 2 + Math.random() * 3
+    });
+  }
+
+  // Flying vehicles
+  flyingVehicles = [];
+  for (let i = 0; i < 8; i++) {
+    flyingVehicles.push({
+      x: Math.random() * W,
+      y: H * (0.1 + Math.random() * 0.35),
+      speed: 0.4 + Math.random() * 1.2,
+      dir: Math.random() > 0.5 ? 1 : -1,
+      size: 3 + Math.random() * 4,
+      trail: []
+    });
+  }
+
+  // Clouds
+  clouds = [];
+  for (let i = 0; i < 6; i++) {
+    clouds.push({
+      x: Math.random() * W,
+      y: H * (0.05 + Math.random() * 0.2),
+      w: 100 + Math.random() * 200,
+      h: 20 + Math.random() * 40,
+      speed: 0.08 + Math.random() * 0.12,
+      alpha: 0.06 + Math.random() * 0.1
+    });
+  }
+}
+
+function genWindows(bx, bw, bh) {
+  const wins = [];
+  const rows = Math.floor(bh / 16);
+  const cols = Math.floor(bw / 12);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (Math.random() > 0.35) {
+        wins.push({
+          x: bx + 4 + c * 12,
+          y: H - bh + 8 + r * 16,
+          on: Math.random() > 0.3,
+          color: Math.random() > 0.6 ? 'rgba(80,180,255,0.8)' : Math.random() > 0.5 ? 'rgba(180,240,255,0.7)' : 'rgba(255,220,150,0.6)',
+          flicker: Math.random() > 0.88,
+          ft: Math.random() * 300
+        });
+      }
+    }
+  }
+  return wins;
+}
+
+function drawBuilding(b) {
+  const x = b.x, w = b.w, bh = b.h;
+  const top = H - bh;
+  ctx.save();
+
+  if (b.type === 0) {
+    // Tower with tapering
+    ctx.beginPath();
+    ctx.moveTo(x + w * 0.1, H);
+    ctx.lineTo(x, top + bh * 0.3);
+    ctx.quadraticCurveTo(x + w * 0.5, top - 10, x + w, top + bh * 0.3);
+    ctx.lineTo(x + w * 0.9, H);
+    ctx.closePath();
+    ctx.fillStyle = b.color;
+    ctx.fill();
+  } else if (b.type === 1) {
+    // Curved swooping building
+    ctx.beginPath();
+    ctx.moveTo(x, H);
+    ctx.lineTo(x, top + 20);
+    ctx.bezierCurveTo(x, top, x + w * 0.3, top - 15, x + w * 0.5, top);
+    ctx.bezierCurveTo(x + w * 0.7, top + 15, x + w, top - 5, x + w, top + 20);
+    ctx.lineTo(x + w, H);
+    ctx.closePath();
+    ctx.fillStyle = b.color;
+    ctx.fill();
+  } else if (b.type === 2) {
+    // Dome + pillar
+    ctx.fillStyle = b.color;
+    ctx.fillRect(x + w * 0.3, top + bh * 0.3, w * 0.4, bh * 0.7);
+    ctx.beginPath();
+    ctx.ellipse(x + w * 0.5, top + bh * 0.3, w * 0.5, bh * 0.25, 0, Math.PI, 0);
+    ctx.fill();
+  } else {
+    // Spire
+    ctx.beginPath();
+    ctx.moveTo(x + w * 0.5, top);
+    ctx.lineTo(x + w * 0.1, H);
+    ctx.lineTo(x + w * 0.9, H);
+    ctx.closePath();
+    ctx.fillStyle = b.color;
+    ctx.fill();
+  }
+
+  // Glow at top
+  const grd = ctx.createRadialGradient(x + w / 2, top, 0, x + w / 2, top, w * 0.8);
+  grd.addColorStop(0, b.glowColor);
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.fillRect(x - 10, top - 20, w + 20, 50);
+
+  // Glow stripes
+  if (b.glowStripes) {
+    ctx.strokeStyle = b.stripeColor;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const sy = top + bh * (0.2 + i * 0.25);
+      ctx.beginPath();
+      ctx.moveTo(x, sy);
+      ctx.lineTo(x + w, sy);
+      ctx.stroke();
+    }
+  }
+
+  // Windows
+  b.windows.forEach(win => {
+    if (win.flicker) { win.ft--; if (win.ft <= 0) { win.on = !win.on; win.ft = 40 + Math.random() * 260; } }
+    if (win.on) {
+      ctx.fillStyle = win.color;
+      ctx.fillRect(win.x, win.y, 6, 8);
+    }
+  });
+
+  ctx.restore();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  frame++;
+
+  // Sky gradient — matches reference image: light blue-white sky
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#0a1a32');
+  sky.addColorStop(0.3, '#0f2040');
+  sky.addColorStop(0.6, '#0a1628');
+  sky.addColorStop(1, '#060d1a');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Atmospheric haze layer
+  const haze = ctx.createLinearGradient(0, H * 0.4, 0, H * 0.7);
+  haze.addColorStop(0, 'transparent');
+  haze.addColorStop(0.5, 'rgba(60,120,200,0.05)');
+  haze.addColorStop(1, 'transparent');
+  ctx.fillStyle = haze;
+  ctx.fillRect(0, 0, W, H);
+
+  // Clouds
+  clouds.forEach(c => {
+    c.x += c.speed;
+    if (c.x > W + c.w) c.x = -c.w;
+    ctx.save();
+    ctx.globalAlpha = c.alpha;
+    ctx.fillStyle = 'rgba(180,220,255,1)';
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, c.w / 2, c.h / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // Ground glow
+  const gnd = ctx.createLinearGradient(0, H * 0.75, 0, H);
+  gnd.addColorStop(0, 'transparent');
+  gnd.addColorStop(1, 'rgba(40,100,200,0.08)');
+  ctx.fillStyle = gnd;
+  ctx.fillRect(0, H * 0.75, W, H * 0.25);
+
+  // Buildings
+  buildings.forEach(b => drawBuilding(b));
+
+  // Energy streams
+  energyStreams.forEach(s => {
+    s.offset += s.speed;
+    ctx.beginPath();
+    ctx.moveTo(0, s.y);
+    for (let x = 0; x <= W; x += 4) {
+      const y = s.y + Math.sin((x * s.freq) + s.offset * 0.05) * s.amplitude;
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = s.width;
+    ctx.stroke();
+    // Glow duplicate
+    ctx.globalAlpha = 0.4;
+    ctx.lineWidth = s.width + 3;
+    ctx.strokeStyle = s.color.replace('0.35', '0.1').replace('0.25', '0.08');
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+
+  // Flying vehicles
+  flyingVehicles.forEach(v => {
+    v.x += v.speed * v.dir;
+    if (v.x > W + 20) v.x = -20;
+    if (v.x < -20) v.x = W + 20;
+    v.trail.push({ x: v.x, y: v.y });
+    if (v.trail.length > 18) v.trail.shift();
+    // Trail
+    v.trail.forEach((pt, i) => {
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, v.size * 0.3 * (i / v.trail.length), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(120,200,255,${0.04 * (i / v.trail.length)})`;
+      ctx.fill();
+    });
+    // Vehicle dot
+    ctx.beginPath();
+    ctx.arc(v.x, v.y, v.size, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(180,230,255,0.9)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(v.x, v.y, v.size + 2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(100,180,255,0.25)';
+    ctx.fill();
+  });
+
+  // Spawn hearts
+  if (frame % 60 === 0) spawnHeart();
+  if (frame % 14 === 0) spawnParticle();
+
+  // Draw hearts
+  hearts = hearts.filter(h => h.alpha > 0.03);
+  hearts.forEach(h => {
+    h.x += h.vx + Math.sin(frame * 0.02 + h.phase) * 0.3;
+    h.y += h.vy;
+    h.rot += h.rotV;
+    h.alpha -= 0.003;
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.rotate(h.rot);
+    ctx.globalAlpha = h.alpha;
+    ctx.font = `${h.size}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(h.char, 0, 0);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  });
+
+  // Particles
+  particles = particles.filter(p => p.alpha > 0.02);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.005;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${p.rgb},${p.alpha})`;
+    ctx.fill();
+  });
+}
+
+function spawnHeart() {
+  const chars = ['♥', '❤', '💕', '💗', '💓'];
+  hearts.push({
+    x: Math.random() * W, y: H + 20,
+    size: 14 + Math.random() * 28,
+    vx: (Math.random() - 0.5) * 0.7,
+    vy: -(0.5 + Math.random() * 1.1),
+    alpha: 0.6 + Math.random() * 0.35,
+    rot: Math.random() * Math.PI * 2,
+    rotV: (Math.random() - 0.5) * 0.025,
+    char: chars[Math.floor(Math.random() * chars.length)],
+    phase: Math.random() * Math.PI * 2
+  });
+}
+
+function spawnParticle() {
+  const options = ['255,45,138', '100,180,255', '255,220,0', '180,240,255'];
+  const rgb = options[Math.floor(Math.random() * options.length)];
+  particles.push({
+    x: Math.random() * W, y: H + 5,
+    r: 1 + Math.random() * 2.5,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: -(0.3 + Math.random() * 0.8),
+    alpha: 0.8, rgb
+  });
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+
+// ============================================================
+// APP LOGIC
+// ============================================================
+const STORAGE_KEY = 'LIK_COUPLES_2090';
+
+function getStore() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveStore(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+}
+
+let state = {
+  lang: 'en', myName: '', myGender: '',
+  role: 'A', coupleCode: '',
+  myQuestions: [], partnerAnswers: []
+};
+
+// ============================================================
+// LANGUAGE TEXTS
+// ============================================================
+const TXT = {
+  en: {
+    welcome: 'Welcome to LIK', tag: 'Find your real love score — powered by AI',
+    create: 'Create a Couple', join: 'Join with Couple Code',
+    priv: 'Answers locked until both partners submit',
+    suggests: ['What is my favourite food?', 'Where did we first meet?', 'What is my biggest dream?', 'What makes me laugh?', 'What is my love language?', 'What do I do when stressed?', 'What is my favourite movie?', 'What annoys me most?', 'Where do I want to travel?', 'How do I show love?', 'What is my favourite song?', 'What is my comfort food?'],
+    voiceWelcome_F: "Hey my love! Welcome to LIK — Love Insurance Kompany. I'm so excited to help you discover how deeply your partner knows you. Let's find your love score together!",
+    voiceWelcome_M: "Hey beautiful! Welcome to LIK — Love Insurance Kompany. I'm thrilled to guide you today. Let's find out how strong your love truly is!",
+    voiceCode_F: "Your couple code is ready, my love. Share this special code with your partner so they can join you. Once they join, go ahead and set your questions!",
+    voiceCode_M: "Your couple code is ready, darling. Send this code to your love so they can connect with you. Then set some heartfelt questions for them!",
+    voiceSetQ_F: "Now sweetheart, set some questions for your partner. Think about what only someone who truly loves you would know. Be creative and have fun!",
+    voiceSetQ_M: "Now darling, it's time to set your questions. Ask things that your partner should know if they truly love you. Make it meaningful and romantic!",
+    voiceWait_F: "Amazing, my love! Your questions are submitted. Now answer the questions your partner set for you. Speak from your heart and be honest!",
+    voiceWait_M: "Wonderful, darling! Questions submitted. Now go answer what your love has asked you. Let your true feelings shine through!",
+    voiceAns_F: "Answer carefully, my love. These questions reveal how well your partner truly knows you. Take your time and be genuine!",
+    voiceAns_M: "Take your time, dear. Answer honestly — this is where true love gets revealed. Every answer matters!",
+    voiceResult_F: (s, msg) => `Your love score is ${s} percent! ${msg} I'm so proud of you both. Love is a beautiful journey — keep nurturing it every single day!`,
+    voiceResult_M: (s, msg) => `Your love score is ${s} percent! ${msg} This is such a beautiful result. Keep loving each other deeply and never stop growing together!`,
+  },
+  ta: {
+    welcome: 'LIK-க்கு வரவேற்கிறோம்', tag: 'AI மூலம் உங்கள் காதல் மதிப்பெண்ணை கண்டறியுங்கள்',
+    create: 'ஜோடி உருவாக்கு', join: 'கோடுடன் சேரு',
+    priv: 'இருவரும் submit செய்யும் வரை பதில்கள் தனிப்பட்டது',
+    suggests: ['என் விருப்பமான உணவு என்ன?', 'நாம் முதலில் எங்கே சந்தித்தோம்?', 'என் பெரிய கனவு என்ன?', 'என்னை சிரிக்க வைப்பது என்ன?', 'என் love language என்ன?', 'நான் stress-ல் என்ன செய்வேன்?', 'என் favourite movie என்ன?', 'என்னை எரிச்சல் படுத்துவது என்ன?', 'நான் எங்கே travel போக விரும்புவேன்?', 'நான் எப்படி அன்பை வெளிப்படுத்துவேன்?'],
+    voiceWelcome_F: "என் அன்பே! LIK-க்கு வரவேற்கிறேன். உங்கள் காதல் எவ்வளவு ஆழமானது என்று இன்று கண்டுபிடிப்போம். உங்கள் love score பார்க்கலாம்!",
+    voiceWelcome_M: "என் இதயமே! LIK-க்கு வரவேற்கிறேன். உங்கள் காதல் எவ்வளவு உண்மையானது என்று இன்று தெரிந்துகொள்வோம்!",
+    voiceCode_F: "உங்கள் couple code தயாராகிவிட்டது என் அன்பே. இந்த code-ஐ உங்கள் partner-இடம் share பண்ணுங்கள்!",
+    voiceCode_M: "உங்கள் couple code ready என் இதயமே. இந்த special code-ஐ உங்கள் காதலரிடம் அனுப்புங்கள்!",
+    voiceSetQ_F: "இப்போது என் அன்பே, உங்கள் partner-க்கான questions set பண்ணுங்கள். உண்மையான காதல் இருந்தால் மட்டுமே தெரியும் என்று கேளுங்கள்!",
+    voiceSetQ_M: "இப்போது என் இதயமே, questions set பண்ணும் நேரம். உங்களை நேசிப்பவருக்கு மட்டுமே தெரியும் என்று கேளுங்கள்!",
+    voiceWait_F: "அருமை என் அன்பே! இப்போது உங்கள் partner கேட்ட questions-க்கு மனதிலிருந்து பதில் சொல்லுங்கள்!",
+    voiceWait_M: "மிக அருமை என் இதயமே! இப்போது உங்கள் காதலர் கேட்ட questions-க்கு நேர்மையாக பதில் சொல்லுங்கள்!",
+    voiceAns_F: "கவனமாக பதில் சொல்லுங்கள் என் அன்பே. இந்த answers உங்கள் காதல் ஆழத்தை காட்டும்!",
+    voiceAns_M: "நேர்மையாக பதில் சொல்லுங்கள் என் இதயமே. இந்த moments உண்மையான காதலை வெளிப்படுத்தும்!",
+    voiceResult_F: (s, msg) => `உங்கள் love score ${s} சதவீதம்! ${msg} உங்கள் காதல் பயணம் எப்போதும் இனிமையாக இருக்கட்டும்!`,
+    voiceResult_M: (s, msg) => `உங்கள் love score ${s} சதவீதம்! ${msg} இந்த அழகான பலன் மகிழ்ச்சி தருகிறது. என்றும் அன்பாக இருங்கள்!`,
+  },
+  tg: {
+    welcome: 'LIK-ku welcome da!', tag: 'Unoda real love score-a AI vachi kandupidu',
+    create: 'Couple create pannu', join: 'Code vachi join pannu',
+    priv: 'Rendu peyrum submit panna thaan results kaanum',
+    suggests: ['En favourite food enna?', 'Naama yengey first meet aanaom?', 'En periya dream enna?', 'Ennai sirikkavaikrathu enna?', 'En love language enna?', 'Stress la irukumpo enna panvein?', 'En favourite movie enna?', 'Ennai erichi paduthrathu enna?', 'Naen yengey travel poganum?', 'Naen epdi anbu vaelippaduthuvein?'],
+    voiceWelcome_F: "Aye ma! LIK-ku welcome da! Nee unoda partner unna evlo therinjukaanga nu inniki theriyum. Love score paakkalaam!",
+    voiceWelcome_M: "Aye da! LIK-ku welcome! Unoda love evlo strong nu inniki kandupidom. Saerndu paakkalaam!",
+    voiceCode_F: "Couple code ready ma! Idha unoda partner-kitta share pannu. Avaa join aana udanay questions set pannu!",
+    voiceCode_M: "Couple code ready da! Idha unoda love-kitta anuppu. Avaa join aana udane questions set pannunga!",
+    voiceSetQ_F: "Ippo ma, unoda partner-ku questions set pannu. Unna romba naesinaa matum theriyum maari kelu!",
+    voiceSetQ_M: "Ippo da, questions set panna neram. Unna kaadalipavaa matum theriyum maari kelu!",
+    voiceWait_F: "Super ma! Questions submit aayiduchu. Ippo unoda partner ketta questions-ku padhil solu!",
+    voiceWait_M: "Romba nalla da! Ippo unoda love ketta questions-ku honest-a padhil solu!",
+    voiceAns_F: "Kavanama padhil solu ma. Idha paarthu unoda love evlo deep nu theriyum!",
+    voiceAns_M: "Honest-a padhil solu da. Idhan love elaam therium!",
+    voiceResult_F: (s, msg) => `Unoda love score ${s} percentage da! ${msg} Unoda love story always sweet-a irukkatum!`,
+    voiceResult_M: (s, msg) => `Unoda love score ${s} percentage ma! ${msg} Romba nalla result! Eppovum anba irunga!`,
+  },
+  hi: {
+    welcome: 'LIK में आपका स्वागत है', tag: 'AI द्वारा अपना असली लव स्कोर जानें',
+    create: 'कपल बनाएं', join: 'कोड से जुड़ें',
+    priv: 'दोनों के सबमिट करने तक जवाब प्राइवेट रहेंगे',
+    suggests: ['मेरा पसंदीदा खाना क्या है?', 'हम पहली बार कहाँ मिले?', 'मेरा सबसे बड़ा सपना क्या है?', 'मुझे क्या हँसाता है?', 'मेरी love language क्या है?', 'तनाव में मैं क्या करता हूँ?', 'मेरी पसंदीदा फिल्म कौनसी है?', 'मुझे क्या परेशान करता है?', 'मैं कहाँ घूमना चाहता हूँ?', 'मैं प्यार कैसे जताता हूँ?'],
+    voiceWelcome_F: "मेरी जान! LIK में आपका स्वागत है। आज हम जानेंगे कि आपका साथी आपको कितना जानता है। चलिए अपना love score ढूंढते हैं!",
+    voiceWelcome_M: "मेरे दिल! LIK में आपका स्वागत है। आज हम देखेंगे कि आपका प्यार कितना गहरा है। साथ मिलकर ये सफर शुरू करते हैं!",
+    voiceCode_F: "आपका couple code तैयार है मेरी जान। इस code को अपने partner के साथ share करें!",
+    voiceCode_M: "आपका couple code ready है मेरे दिल। इसे अपने प्यार को भेजें!",
+    voiceSetQ_F: "अब मेरी जान, अपने partner के लिए questions set करें। ऐसे सवाल पूछें जो सिर्फ सच्चा प्यार करने वाला जान सके!",
+    voiceSetQ_M: "अब मेरे दिल, questions set करने का वक्त है। ऐसे सवाल पूछें जो आपका प्यार ही जान सके!",
+    voiceWait_F: "बहुत खूब मेरी जान! अब partner के सवालों के जवाब दें। दिल से जवाब दें!",
+    voiceWait_M: "शाबाश मेरे दिल! अब अपने प्यार के सवालों का ईमानदारी से जवाब दें!",
+    voiceAns_F: "ध्यान से जवाब दें मेरी जान। ये answers बताएंगे कि प्यार कितना गहरा है!",
+    voiceAns_M: "सच्चाई से जवाब दें मेरे दिल। यहीं से असली प्यार झलकता है!",
+    voiceResult_F: (s, msg) => `आपका love score ${s} percent है! ${msg} आपकी प्रेम कहानी हमेशा खूबसूरत रहे!`,
+    voiceResult_M: (s, msg) => `आपका love score ${s} percent है! ${msg} हमेशा प्यार में रहें!`,
+  }
+};
+
+// ============================================================
+// VOICE ENGINE
+// ============================================================
+let voices = [];
+window.speechSynthesis.onvoiceschanged = () => { voices = window.speechSynthesis.getVoices(); };
+setTimeout(() => { voices = window.speechSynthesis.getVoices(); }, 400);
+
+function getVoice(wantGender) {
+  const female = ['samantha','victoria','karen','zira','female','woman','fiona','tessa','moira','veena'];
+  const male = ['daniel','david','alex','jorge','diego','thomas','male','man','oliver','reed'];
+  const kw = wantGender === 'F' ? female : male;
+  let v = voices.find(x => kw.some(k => x.name.toLowerCase().includes(k)));
+  if (!v) v = voices[0];
+  return v || null;
+}
+
+function speak(text, viId, viTxtId) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const voiceGender = state.myGender === 'M' ? 'F' : 'M';
+  const utt = new SpeechSynthesisUtterance(text);
+  const v = getVoice(voiceGender);
+  if (v) utt.voice = v;
+  utt.rate = 0.9;
+  utt.pitch = voiceGender === 'F' ? 1.1 : 0.88;
+  utt.volume = 1;
+  if (viId) {
+    const el = document.getElementById(viId);
+    const tel = document.getElementById(viTxtId);
+    if (el) { el.style.display = 'flex'; if (tel) tel.textContent = 'Voice guide active...'; }
+    utt.onend = utt.onerror = () => { if (el) el.style.display = 'none'; };
+  }
+  window.speechSynthesis.speak(utt);
+}
+
+function getVoiceKey(base) {
+  const suffix = state.myGender === 'M' ? 'F' : 'M';
+  return `${base}_${suffix}`;
+}
+
+// ============================================================
+// LANGUAGE
+// ============================================================
+function setLang(l) {
+  state.lang = l;
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const L = TXT[l] || TXT.en;
+  document.getElementById('t-welcome').textContent = L.welcome;
+  document.getElementById('t-tag').textContent = L.tag;
+  document.getElementById('t-create').textContent = L.create;
+  document.getElementById('t-join').textContent = L.join;
+  document.getElementById('t-priv').textContent = L.priv;
+  renderSuggestions();
+  // Speak welcome in new language
+  const key = getVoiceKey('voiceWelcome');
+  const txt = L[key] || TXT.en[key];
+  if (txt && typeof txt === 'string') {
+    setTimeout(() => speak(txt, null, null), 300);
+  }
+}
+
+// ============================================================
+// SCREEN NAV
+// ============================================================
+function showS(id) {
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// GENDER
+// ============================================================
+function selG(type, g) {
+  ['M', 'F'].forEach(x => {
+    const el = document.getElementById(`g${type}-${x}`);
+    if (el) el.classList.toggle('sel', x === g);
+  });
+  state.myGender = g;
+}
+
+// ============================================================
+// CREATE
+// ============================================================
+function doCreate() {
+  const name = document.getElementById('c-name').value.trim();
+  if (!name) { alert('Please enter your name!'); return; }
+  if (!state.myGender) { alert('Please select your gender!'); return; }
+  state.myName = name;
+  state.role = 'A';
+  const code = 'LIK-' + Math.floor(1000 + Math.random() * 9000);
+  state.coupleCode = code;
+
+  // Save to localStorage
+  const store = getStore();
+  store[code] = {
+    A: { name, gender: state.myGender, questions: [], answers: [], submitted: false },
+    B: null,
+    created: Date.now()
+  };
+  saveStore(store);
+
+  document.getElementById('disp-code').textContent = code;
+  showS('s-code');
+
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceCode');
+    const txt = L[key] || TXT.en[key];
+    if (txt) speak(txt, 'vi-code', 'vi-code-t');
+  }, 600);
+}
+
+// ============================================================
+// JOIN
+// ============================================================
+function doJoin() {
+  const name = document.getElementById('j-name').value.trim();
+  const code = document.getElementById('j-code').value.trim().toUpperCase();
+  if (!name) { alert('Please enter your name!'); return; }
+  if (!state.myGender) { alert('Please select your gender!'); return; }
+  if (!code) { alert('Please enter the couple code!'); return; }
+
+  const store = getStore();
+  if (!store[code]) {
+    alert('Invalid couple code! Make sure your partner has created a couple first and you are using the same device or browser.');
+    return;
+  }
+  if (store[code].B) {
+    alert('This couple code already has 2 partners. Please ask your partner to create a new couple.');
+    return;
+  }
+
+  state.myName = name;
+  state.coupleCode = code;
+  state.role = 'B';
+
+  store[code].B = { name, gender: state.myGender, questions: [], answers: [], submitted: false };
+  saveStore(store);
+
+  showS('s-setq');
+  renderQList();
+  renderSuggestions();
+
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceSetQ');
+    const txt = L[key] || TXT.en[key];
+    if (txt) speak(txt, 'vi-setq', 'vi-setq-t');
+  }, 600);
+}
+
+// ============================================================
+// SET QUESTIONS
+// ============================================================
+function goSetQ() {
+  showS('s-setq');
+  renderQList();
+  renderSuggestions();
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceSetQ');
+    const txt = L[key] || TXT.en[key];
+    if (txt) speak(txt, 'vi-setq', 'vi-setq-t');
+  }, 600);
+}
+
+function renderQList() {
+  const c = document.getElementById('q-list');
+  c.innerHTML = '';
+  state.myQuestions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'qsi';
+    d.innerHTML = `<div style="font-size:10px;color:rgba(150,210,255,0.6);font-weight:600;margin-bottom:4px;">Q${i + 1}</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <input class="qsinput" placeholder="Type your question..." value="${q.replace(/"/g, '&quot;')}" oninput="updateQ(${i},this.value)"/>
+        <button class="db" onclick="delQ(${i})">&#10005;</button>
+      </div>`;
+    c.appendChild(d);
+  });
+}
+
+function addQ() {
+  if (state.myQuestions.length >= 20) { alert('Maximum 20 questions!'); return; }
+  state.myQuestions.push('');
+  renderQList();
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.qsinput');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function updateQ(i, v) { state.myQuestions[i] = v; }
+function delQ(i) { state.myQuestions.splice(i, 1); renderQList(); }
+
+function renderSuggestions() {
+  const c = document.getElementById('s-cont');
+  const L = TXT[state.lang] || TXT.en;
+  c.innerHTML = '';
+  (L.suggests || TXT.en.suggests).forEach(s => {
+    const t = document.createElement('span');
+    t.className = 'stag';
+    t.textContent = s;
+    t.onclick = () => {
+      if (state.myQuestions.length >= 20) return;
+      state.myQuestions.push(s);
+      renderQList();
+    };
+    c.appendChild(t);
+  });
+}
+
+function submitQs() {
+  const valid = state.myQuestions.filter(q => q.trim().length > 0);
+  if (valid.length < 5) { alert('Please add at least 5 questions!'); return; }
+  state.myQuestions = valid;
+
+  const store = getStore();
+  if (store[state.coupleCode] && store[state.coupleCode][state.role]) {
+    store[state.coupleCode][state.role].questions = valid;
+    saveStore(store);
+  }
+
+  showS('s-wait');
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceWait');
+    const txt = L[key] || TXT.en[key];
+    if (txt) speak(txt, 'vi-wait', 'vi-wait-t');
+  }, 600);
+}
+
+// ============================================================
+// ANSWER
+// ============================================================
+function startAnswering() {
+  const store = getStore();
+  const cd = store[state.coupleCode];
+  const otherRole = state.role === 'A' ? 'B' : 'A';
+  const other = cd ? cd[otherRole] : null;
+
+  let partnerQs = other && other.questions && other.questions.length > 0
+    ? other.questions
+    : ['What is my favourite colour?', 'Where do I want to go on our next date?', 'What is my biggest dream?', 'What makes me the happiest?', 'How do I show love to you?'];
+
+  state.partnerAnswers = partnerQs.map(q => ({ q, a: '' }));
+  renderAnswers();
+  showS('s-ans');
+
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceAns');
+    const txt = L[key] || TXT.en[key];
+    if (txt) speak(txt, 'vi-ans', 'vi-ans-t');
+  }, 600);
+}
+
+function renderAnswers() {
+  const c = document.getElementById('ans-list');
+  c.innerHTML = '';
+  const total = state.partnerAnswers.length;
+  const answered = state.partnerAnswers.filter(x => x.a.trim()).length;
+  updateProgress(answered, total);
+
+  state.partnerAnswers.forEach((item, i) => {
+    const d = document.createElement('div');
+    d.className = 'qi';
+    d.innerHTML = `<div class="qn">Q${i + 1}</div>
+      <div class="qt">${item.q}</div>
+      <input class="qin" placeholder="Your answer..." value="${item.a.replace(/"/g, '&quot;')}" oninput="updateAns(${i},this.value)"/>`;
+    c.appendChild(d);
+  });
+}
+
+function updateProgress(answered, total) {
+  const pct = total ? Math.round((answered / total) * 100) : 0;
+  document.getElementById('apb').style.width = pct + '%';
+  document.getElementById('qct').textContent = `${answered} / ${total}`;
+}
+
+function updateAns(i, v) {
+  state.partnerAnswers[i].a = v;
+  const total = state.partnerAnswers.length;
+  const answered = state.partnerAnswers.filter(x => x.a.trim()).length;
+  updateProgress(answered, total);
+}
+
+function submitAnswers() {
+  const unanswered = state.partnerAnswers.filter(x => !x.a.trim()).length;
+  if (unanswered > 0 && !confirm(`${unanswered} question(s) unanswered. Submit anyway?`)) return;
+
+  const store = getStore();
+  if (store[state.coupleCode] && store[state.coupleCode][state.role]) {
+    store[state.coupleCode][state.role].answers = state.partnerAnswers;
+    store[state.coupleCode][state.role].submitted = true;
+    saveStore(store);
+  }
+
+  showS('s-calc');
+  calculateScore();
+}
+
+// ============================================================
+// AI SCORE — Replace YOUR_API_KEY with actual key
+// ============================================================
+const API_KEY = 'YOUR_API_KEY_HERE';
+
+async function calculateScore() {
+  const answered = state.partnerAnswers.filter(x => x.a.trim());
+
+  const prompt = `You are LIK — Love Insurance Kompany AI from year 2090.
+Analyze these answers a person gave to their partner's questions.
+${answered.map((x, i) => `Q${i + 1}: ${x.q}\nAnswer: ${x.a}`).join('\n\n')}
+Based on the depth, thoughtfulness, and emotional detail of the answers, give a love score out of 100.
+Return ONLY valid JSON (no markdown):
+{"score":78,"message":"Your love is deep and beautiful!","breakdown":[{"label":"Emotional Understanding","points":85},{"label":"Attention to Detail","points":72},{"label":"Memory and Care","points":78},{"label":"Depth of Bond","points":80}]}
+Score between 40-100. Message should be warm and romantic.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const txt = data.content.map(x => x.text || '').join('');
+    const clean = txt.replace(/```json|```/g, '').trim();
+    showResult(JSON.parse(clean));
+  } catch (e) {
+    const score = 50 + Math.floor(Math.random() * 45);
+    showResult({
+      score,
+      message: score >= 80 ? "Your love is extraordinary — deeply connected souls!" : score >= 60 ? "Your love is strong and growing beautifully!" : "Every love story grows — keep nurturing yours!",
+      breakdown: [
+        { label: "Emotional Understanding", points: Math.min(100, score + Math.floor(Math.random() * 12) - 5) },
+        { label: "Attention to Detail", points: Math.min(100, score + Math.floor(Math.random() * 12) - 5) },
+        { label: "Memory and Care", points: Math.min(100, score + Math.floor(Math.random() * 12) - 5) },
+        { label: "Depth of Bond", points: Math.min(100, score + Math.floor(Math.random() * 12) - 5) }
+      ]
+    });
+  }
+}
+
+function showResult(r) {
+  const score = Math.min(100, Math.max(0, r.score));
+  document.getElementById('res-score').textContent = score + '%';
+  document.getElementById('res-msg').textContent = r.message || '';
+  const bl = document.getElementById('res-break');
+  bl.innerHTML = '';
+  (r.breakdown || []).forEach(b => {
+    const pts = Math.min(100, Math.max(0, b.points));
+    const d = document.createElement('div');
+    d.className = 'srow';
+    d.innerHTML = `<span>${b.label}</span><span class="spt">${pts}%</span>`;
+    bl.appendChild(d);
+  });
+  showS('s-result');
+  setTimeout(() => {
+    const L = TXT[state.lang] || TXT.en;
+    const key = getVoiceKey('voiceResult');
+    const fn = L[key] || TXT.en[key];
+    if (typeof fn === 'function') speak(fn(score, r.message || ''), 'vi-res', 'vi-res-t');
+  }, 800);
+}
+
+// ============================================================
+// RESTART
+// ============================================================
+function restartApp() {
+  window.speechSynthesis.cancel();
+  state = { lang: state.lang, myName: '', myGender: '', role: 'A', coupleCode: '', myQuestions: [], partnerAnswers: [] };
+  showS('s-home');
+}
+
+// Welcome voice on load
+setTimeout(() => {
+  voices = window.speechSynthesis.getVoices();
+  const utt = new SpeechSynthesisUtterance("Welcome to LIK — Love Insurance Kompany! Your love story begins here.");
+  utt.rate = 0.9; utt.pitch = 1.05; utt.volume = 1;
+  const fv = voices.find(v => ['samantha','zira','victoria','female'].some(k => v.name.toLowerCase().includes(k)));
+  if (fv) utt.voice = fv;
+  window.speechSynthesis.speak(utt);
+}, 1200);
+
+renderSuggestions();
+</script>
+</body>
+</html>
